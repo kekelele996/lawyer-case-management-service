@@ -92,7 +92,7 @@ func (r *BillingRepository) Summary(month time.Time) (map[string]float64, error)
 		return nil, fmt.Errorf("summary receivables: %w", err)
 	}
 	if err := r.db.Model(&model.Billing{}).
-		Select("COALESCE(SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END), 0)").
+		Select("COALESCE(SUM(CASE WHEN status = 'paid' OR status = 'invoiced' THEN amount ELSE 0 END), 0)").
 		Where("created_at >= ? AND created_at < ?", start, end).
 		Scan(&received).Error; err != nil {
 		return nil, fmt.Errorf("summary received: %w", err)

@@ -75,7 +75,7 @@ func (s *BillingService) MarkInvoiced(id uint64, invoiceInfo string) (*model.Bil
 	if err != nil {
 		return nil, util.Wrap(err, "Billing[id=%d] invoiced find failed", id)
 	}
-	if b.Status != constants.BillingStatusPending {
+	if b.Status != constants.BillingStatusPaid {
 		return nil, util.NewAppError(constants.CodeBillingStatusConflict, "Billing[id="+u64(id)+"] invoiced failed: status="+b.Status)
 	}
 	b.Status = constants.BillingStatusInvoiced
@@ -94,6 +94,9 @@ func (s *BillingService) Void(id uint64) (*model.Billing, error) {
 	b, err := s.repo.FindByID(id)
 	if err != nil {
 		return nil, util.Wrap(err, "Billing[id=%d] void find failed", id)
+	}
+	if b.Status == constants.BillingStatusVoid {
+		return nil, util.NewAppError(constants.CodeBillingStatusConflict, "Billing[id="+u64(id)+"] void failed: already void")
 	}
 	b.Status = constants.BillingStatusVoid
 	if err := s.repo.Update(b); err != nil {
