@@ -6,7 +6,7 @@ import "time"
 type Document struct {
 	ID         uint64    `gorm:"primaryKey" json:"id"`
 	Title      string    `gorm:"size:200;not null" json:"title"`
-	FileType   string    `gorm:"size:30;not null;default:complaint" json:"file_type"`
+	FileType   string    `gorm:"size:30;not null;default:other" json:"file_type"`
 	FileURL    string    `gorm:"size:500;not null;default:''" json:"file_url"`
 	UploadTime time.Time `json:"upload_time"`
 	CaseID     uint64    `gorm:"not null;index" json:"case_id"`
