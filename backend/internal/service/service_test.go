@@ -7,7 +7,8 @@ import (
 )
 
 func TestCanFlow(t *testing.T) {
-	cases := []struct {
+	// 律师：仅允许前进、回退上一步或保持原状态。
+	lawyerCases := []struct {
 		from, to string
 		want     bool
 	}{
@@ -19,9 +20,25 @@ func TestCanFlow(t *testing.T) {
 		{constants.CaseStatusClosed, constants.CaseStatusFiled, false},
 		{constants.CaseStatusInvestigating, constants.CaseStatusFiled, true},
 	}
-	for _, tc := range cases {
-		if got := canFlow(tc.from, tc.to); got != tc.want {
-			t.Errorf("canFlow(%s->%s) = %v, want %v", tc.from, tc.to, got, tc.want)
+	for _, tc := range lawyerCases {
+		if got := canFlow(constants.RoleLawyer, tc.from, tc.to); got != tc.want {
+			t.Errorf("canFlow(lawyer, %s->%s) = %v, want %v", tc.from, tc.to, got, tc.want)
+		}
+	}
+
+	// 管理员：可跨状态跳转至任意合法状态。
+	adminCases := []struct {
+		from, to string
+		want     bool
+	}{
+		{constants.CaseStatusFiled, constants.CaseStatusClosed, true},
+		{constants.CaseStatusClosed, constants.CaseStatusFiled, true},
+		{constants.CaseStatusFiled, constants.CaseStatusArchived, true},
+		{constants.CaseStatusArchived, constants.CaseStatusInvestigating, true},
+	}
+	for _, tc := range adminCases {
+		if got := canFlow(constants.RoleAdmin, tc.from, tc.to); got != tc.want {
+			t.Errorf("canFlow(admin, %s->%s) = %v, want %v", tc.from, tc.to, got, tc.want)
 		}
 	}
 }

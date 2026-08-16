@@ -89,7 +89,7 @@ func (s *CaseService) ChangeStatus(id uint64, operatorRole string, status string
 	if !constants.IsValidCaseStatus(status) {
 		return nil, util.NewAppError(constants.CodeValidationFailed, "Case[id="+u64(id)+"] status invalid: "+status)
 	}
-	if !canFlow(c.Status, status) {
+	if !canFlow(operatorRole, c.Status, status) {
 		return nil, util.NewAppError(constants.CodeCaseStatusConflict, "Case[id="+u64(id)+"] status conflict: "+c.Status+" -> "+status)
 	}
 	c.Status = status
@@ -137,7 +137,8 @@ func (s *CaseService) Get(id uint64) (*model.Case, error) {
 }
 
 // canFlow 案件状态机：filed->investigating->hearing->closed->archived，允许回退到上一步。
-func canFlow(from, to string) bool {
+// 管理员可跨状态跳转至任意合法状态。
+func canFlow(operatorRole, from, to string) bool {
 	idx := map[string]int{constants.CaseStatusFiled: 0, constants.CaseStatusInvestigating: 1,
 		constants.CaseStatusHearing: 2, constants.CaseStatusClosed: 3, constants.CaseStatusArchived: 4}
 	a, okA := idx[from]
@@ -145,7 +146,10 @@ func canFlow(from, to string) bool {
 	if !okA || !okB {
 		return false
 	}
-	return b == a+1 || b == a
+	if operatorRole == constants.RoleAdmin {
+		return true
+	}
+	return b == a+1 || b == a-1 || b == a
 }
 
 func jsonCoLawyers(ids []uint64) model.CoLawyerJSON {
