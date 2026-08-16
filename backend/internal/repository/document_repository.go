@@ -42,7 +42,7 @@ func (r *DocumentRepository) FindByID(id uint64) (*model.Document, error) {
 // ListByCase 查询某案件文档。
 func (r *DocumentRepository) ListByCase(caseID uint64) ([]model.Document, error) {
 	var list []model.Document
-	if err := r.db.Where("case_id = ?", caseID).Order("upload_time DESC").Find(&list).Error; err != nil {
+	if err := r.db.Where("case_id = ?", caseID).Order("upload_time ASC").Find(&list).Error; err != nil {
 		return nil, fmt.Errorf("list documents by case: %w", err)
 	}
 	return list, nil
@@ -57,7 +57,7 @@ func (r *DocumentRepository) List(page, pageSize int, fileType, keyword string) 
 		q = q.Where("file_type = ?", fileType)
 	}
 	if keyword != "" {
-		q = q.Where("title LIKE ?", "%"+keyword+"%")
+		q = q.Where("file_url LIKE ?", "%"+keyword+"%")
 	}
 	if err := q.Count(&total).Error; err != nil {
 		return nil, 0, fmt.Errorf("count documents: %w", err)

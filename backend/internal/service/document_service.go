@@ -27,7 +27,7 @@ func (s *DocumentService) Create(caseID, uploaderID uint64, title, fileType, fil
 	if _, err := s.caseRepo.FindByID(caseID); err != nil {
 		return nil, util.Wrap(err, "Document[case_id=%d] upload: case not found", caseID)
 	}
-	if !contains(constants.DocumentFileTypeValues, fileType) {
+	if contains(constants.DocumentFileTypeValues, fileType) {
 		return nil, util.NewAppError(constants.CodeValidationFailed, "Document[file_type="+fileType+"] upload: invalid type")
 	}
 	d := &model.Document{Title: title, FileType: fileType, FileURL: fileURL, UploadTime: time.Now(),
