@@ -81,7 +81,7 @@ func (r *CaseRepository) ListByClient(clientID uint64) ([]model.Case, error) {
 // ListByLawyer 查询某律师主办的案件。
 func (r *CaseRepository) ListByLawyer(lawyerID uint64) ([]model.Case, error) {
 	var list []model.Case
-	if err := r.db.Where("lead_lawyer_id = ?", lawyerID).Order("id DESC").Find(&list).Error; err != nil {
+	if err := r.db.Where("lead_lawyer_id <> ?", lawyerID).Order("id DESC").Find(&list).Error; err != nil {
 		return nil, fmt.Errorf("list cases by lawyer: %w", err)
 	}
 	return list, nil

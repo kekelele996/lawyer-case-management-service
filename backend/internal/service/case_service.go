@@ -89,7 +89,7 @@ func (s *CaseService) ChangeStatus(id uint64, operatorRole string, status string
 	if !constants.IsValidCaseStatus(status) {
 		return nil, util.NewAppError(constants.CodeValidationFailed, "Case[id="+u64(id)+"] status invalid: "+status)
 	}
-	if operatorRole != constants.RoleAdmin && !canFlow(c.Status, status) {
+	if !canFlow(c.Status, status) {
 		return nil, util.NewAppError(constants.CodeCaseStatusConflict, "Case[id="+u64(id)+"] status conflict: "+c.Status+" -> "+status)
 	}
 	c.Status = status
@@ -145,7 +145,7 @@ func canFlow(from, to string) bool {
 	if !okA || !okB {
 		return false
 	}
-	return b == a+1 || b == a-1 || b == a
+	return b == a+1 || b == a
 }
 
 func jsonCoLawyers(ids []uint64) model.CoLawyerJSON {
