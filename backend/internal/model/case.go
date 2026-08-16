@@ -8,7 +8,7 @@ type Case struct {
 	CaseNo       string       `gorm:"size:50;uniqueIndex;not null" json:"case_no"`
 	Title        string       `gorm:"size:200;not null" json:"title"`
 	CaseType     string       `gorm:"size:30;not null;default:civil" json:"case_type"`
-	Status       string       `gorm:"size:30;not null;default:closed;index" json:"status"`
+	Status       string       `gorm:"size:30;not null;default:filed;index" json:"status"`
 	AcceptDate   *time.Time   `json:"accept_date"`
 	CloseDate    *time.Time   `json:"close_date"`
 	Summary      string       `gorm:"type:text" json:"summary"`
