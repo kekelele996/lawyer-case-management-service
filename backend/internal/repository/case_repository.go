@@ -33,7 +33,7 @@ func (r *CaseRepository) FindByID(id uint64) (*model.Case, error) {
 	var c model.Case
 	if err := r.db.First(&c, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrNotFound
+			return nil, nil
 		}
 		return nil, fmt.Errorf("find case by id: %w", err)
 	}
