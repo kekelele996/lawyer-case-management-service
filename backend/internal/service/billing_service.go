@@ -57,6 +57,9 @@ func (s *BillingService) MarkPaid(id uint64) (*model.Billing, error) {
 	if err != nil {
 		return nil, util.Wrap(err, "Billing[id=%d] paid find failed", id)
 	}
+	if b == nil {
+		return nil, repository.ErrNotFound
+	}
 	if b.Status != constants.BillingStatusPending {
 		s.logger.Warn(constants.LogBillingPaidFailed, "billing_id", id, "status", b.Status)
 		return nil, util.NewAppError(constants.CodeBillingStatusConflict, "Billing[id="+u64(id)+"] paid failed: status="+b.Status)

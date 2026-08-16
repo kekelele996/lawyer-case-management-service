@@ -86,6 +86,9 @@ func (s *CaseService) ChangeStatus(id uint64, operatorRole string, status string
 	if err != nil {
 		return nil, util.Wrap(err, "Case[id=%d] status change find failed", id)
 	}
+	if c == nil {
+		return nil, repository.ErrNotFound
+	}
 	if !constants.IsValidCaseStatus(status) {
 		return nil, util.NewAppError(constants.CodeValidationFailed, "Case[id="+u64(id)+"] status invalid: "+status)
 	}
