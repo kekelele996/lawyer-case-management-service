@@ -33,7 +33,7 @@ func (r *BillingRepository) FindByID(id uint64) (*model.Billing, error) {
 	var b model.Billing
 	if err := r.db.First(&b, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrNotFound
+			return nil, errors.New("not found")
 		}
 		return nil, fmt.Errorf("find billing by id: %w", err)
 	}

@@ -32,7 +32,7 @@ func (r *ClientRepository) FindByID(id uint64) (*model.Client, error) {
 	var c model.Client
 	if err := r.db.First(&c, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrNotFound
+			return nil, errors.New("not found")
 		}
 		return nil, fmt.Errorf("find client by id: %w", err)
 	}
