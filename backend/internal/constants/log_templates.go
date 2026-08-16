@@ -26,6 +26,7 @@ const (
 	LogBillingPaidFailed       = "billing paid failed"
 	LogBillingInvoicedSuccess  = "billing invoiced success"
 	LogBillingVoidSuccess      = "billing void success"
+	LogBillingVoidFailed       = "billing void failed"
 	LogBillingSummary          = "billing summary"
 	LogAuditWriteFailed        = "audit log write failed"
 	LogUploadFileSuccess       = "upload file success"
